@@ -39,6 +39,7 @@
 | `·`           | 內積點乘            | dot product                                | 神經元加權、線性模型      |
 | `⊗`           | 克羅內克積          | Kronecker product / tensor product         | 高階張量運算              |
 | `∘`           | 函數複合            | composition / f∘g(x)                       | 多層神經網路結合          |
+| ω             |                     | omega                                      |                           |
 
 ------
 
