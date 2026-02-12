@@ -1,3 +1,5 @@
+### Tokenizing text
+
 import urllib.request
 
 url = (
@@ -29,6 +31,7 @@ print(result)
 
 text = "Hello, world. Is this-- a test?"
 result = re.split(r'([,.:;?_!"()\']|--|\s)', text)
+# [OUT EXPR for VAR in ITER if CONDI]
 result = [item.strip() for item in result if item.strip()]
 print(result)
 
@@ -37,6 +40,8 @@ preprocessed = [item.strip() for item in preprocessed if item.strip()]
 print(len(preprocessed))
 
 print(preprocessed[:30])
+
+### Converting tokens into token IDs
 
 all_words = sorted(set(preprocessed))
 vocab_size = len(all_words)
@@ -75,7 +80,9 @@ print(ids)
 print(tokenizer.decode(ids))
 
 text = "Hello, do you like tea?"
-# print(tokenizer.encode(text))
+# print(tokenizer.encode(text)) # Unknown token error
+
+### Adding special context tokens
 
 all_tokens = sorted(list(set(preprocessed)))
 all_tokens.extend(["<|endoftext|>", "<|unk|>"])
@@ -117,6 +124,8 @@ print(tokenizer.encode(text))
 
 print(tokenizer.decode(tokenizer.encode(text)))
 
+### Byte pair encoding
+
 from importlib.metadata import version
 import tiktoken
 
@@ -133,6 +142,18 @@ print(integers)
 
 strings = tokenizer.decode(integers)
 print(strings)
+
+## Exercise 2.1
+
+text = (
+    "Akwirwier"
+)
+integers = tokenizer.encode(text, allowed_special={"<|endoftext|>"})
+print(integers)
+
+##
+
+### Data sampling with a sliding window
 
 with open("the-verdict.txt", "r", encoding="utf-8") as f:
     raw_text = f.read()
@@ -215,6 +236,32 @@ print(first_batch)
 second_batch = next(data_iter)
 print(second_batch)
 
+## Exercise 2.2
+
+dataloader = create_dataloader_v1(
+    raw_text, batch_size=1, max_length=2, stride=2, shuffle=False
+)
+
+data_iter = iter(dataloader)
+first_batch = next(data_iter)
+print(first_batch)
+
+second_batch = next(data_iter)
+print(second_batch)
+
+dataloader = create_dataloader_v1(
+    raw_text, batch_size=1, max_length=8, stride=2, shuffle=False
+)
+
+data_iter = iter(dataloader)
+first_batch = next(data_iter)
+print(first_batch)
+
+second_batch = next(data_iter)
+print(second_batch)
+
+##
+
 dataloader = create_dataloader_v1(
     raw_text, batch_size=8, max_length=4, stride=4, shuffle=False
 )
@@ -223,6 +270,8 @@ data_iter = iter(dataloader)
 inputs, targets = next(data_iter)
 print("Inputs:\n", inputs)
 print("\nTargets:\n", targets)
+
+### Creating token embeddings
 
 input_ids = torch.tensor([2, 3, 5, 1])
 
