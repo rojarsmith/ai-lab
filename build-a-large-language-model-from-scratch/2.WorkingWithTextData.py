@@ -282,20 +282,21 @@ torch.manual_seed(123)
 embedding_layer = torch.nn.Embedding(vocab_size, output_dim)  # Uniform Distribution
 print(embedding_layer.weight)
 
-# import tkinter as tk
-# tk.Tk()
-
-# import matplotlib.pyplot as plt
-
-# samples = torch.empty(10000).uniform_(-1.0, 1.0).numpy()
-# plt.hist(samples, bins=50)
-# plt.title("Uniform Distribution [-1, 1]")
-# plt.show()
-# plt.close('all')
-
 print(embedding_layer(torch.tensor([3])))
 
 print(embedding_layer(input_ids))
+
+# Embedding uses Uniform Distribution by default
+import matplotlib.pyplot as plt
+
+samples = torch.empty(10000).uniform_(-1.0, 1.0).numpy()
+plt.hist(samples, bins=50)
+plt.title("Uniform Distribution [-1, 1]")
+plt.show(block=False)
+plt.pause(3)
+plt.close('all')
+
+### Encoding word positions
 
 vocab_size = 50257
 output_dim = 256
@@ -314,9 +315,11 @@ token_embeddings = token_embedding_layer(inputs)
 print(token_embeddings.shape)
 
 context_length = max_length
+# Training is needed in the future
 pos_embedding_layer = torch.nn.Embedding(context_length, output_dim)
 pos_embeddings = pos_embedding_layer(torch.arange(context_length))
 print(pos_embeddings.shape)
+print(pos_embeddings)
 
 input_embeddings = token_embeddings + pos_embeddings
 print(input_embeddings.shape)

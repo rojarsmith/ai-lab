@@ -105,3 +105,100 @@ L(w) = loss(output(w))
 
 ------
 
+## a = sigmoid(z) = 1 / (1 + e^(-z))如何對其r進行z的偏導數
+
+你這題其實就是在問：
+
+```math
+[a = \sigma(z) = \frac{1}{1 + e^{-z}}]
+```
+
+對 **z 做偏導數**（其實這裡是普通導數，因為只有一個變數）。
+
+------
+
+## 第一步：寫出原式
+
+```math
+[a = (1 + e^{-z})^{-1}]
+```
+
+------
+
+## 第二步：使用鏈式法則 (Chain Rule)
+
+對 z 微分：
+
+```math
+[\frac{da}{dz} = -1 \cdot (1 + e^{-z})^{-2} \cdot \frac{d}{dz}(1 + e^{-z})]
+```
+
+而：
+
+```math
+[\frac{d}{dz}(1 + e^{-z}) = -e^{-z}]
+```
+
+指數函數e的z偏微分-z不用減1。
+
+------
+
+## 第三步：整理
+
+```math
+[\frac{da}{dz} = -(1 + e^{-z})^{-2} \cdot (-e^{-z})] = [\frac{e^{-z}}{(1 + e^{-z})^2}]
+```
+
+------
+
+## 第四步：用 sigmoid 本身表示（最漂亮的形式）
+
+因為：
+
+```math
+[a = \frac{1}{1 + e^{-z}}]
+```
+
+且
+
+```math
+[1 - a = \frac{e^{-z}}{1 + e^{-z}}]
+```
+
+所以：
+
+```math
+[\frac{da}{dz} = a(1-a)]
+```
+
+------
+
+# ✅ 最終答案
+
+```math
+[\boxed{\frac{d}{dz} \sigma(z) = \sigma(z)(1-\sigma(z))}]
+```
+
+或寫成：
+
+```math
+[\boxed{\frac{da}{dz} = a(1-a)}]
+```
+
+------
+
+# 🔥 重要性
+
+這個結果是：
+
+- 神經網路
+- Logistic Regression
+- Backpropagation
+- Binary Cross Entropy
+
+的核心公式。
+
+因為它讓梯度計算非常乾淨。
+
+------
+
