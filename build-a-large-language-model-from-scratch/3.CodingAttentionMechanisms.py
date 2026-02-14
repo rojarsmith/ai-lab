@@ -1,3 +1,5 @@
+### Attending to different parts of the input with self-attention
+
 import torch
 
 inputs = torch.tensor(
@@ -46,6 +48,8 @@ for i, x_i in enumerate(inputs):
     context_vec_2 += attn_weights_2[i] * x_i
 print(context_vec_2)
 
+## Computing attention weights for all input tokens
+
 attn_scores = torch.empty(6, 6)
 for i, x_i in enumerate(inputs):
     for j, x_j in enumerate(inputs):
@@ -62,10 +66,14 @@ row_2_sum = sum([0.1385, 0.2379, 0.2333, 0.1240, 0.1082, 0.1581])
 print("Row 2 sum:", row_2_sum)
 print("All row sums:", attn_weights.sum(dim=-1))
 
+# [1,2,3] · [4,5,6] = 32
+# [1,2,3] (1x3) @ [[4],[5],[6]] (3x1) = [[32]]
 all_context_vecs = attn_weights @ inputs
 print(all_context_vecs)
 
 print("Previous 2nd context vector:", context_vec_2)
+
+### Implementing self-attention with trainable weights
 
 x_2 = inputs[1]
 d_in = inputs.shape[1]
@@ -99,6 +107,8 @@ print(attn_weights_2)
 
 context_vec_2 = attn_weights_2 @ values
 print(context_vec_2)
+
+## Implementing a compact self-attention Python class
 
 # A compact self-attention class
 import torch.nn as nn
@@ -148,10 +158,25 @@ torch.manual_seed(123)
 # torch.manual_seed(789)
 sa_v2 = SelfAttention_v2(d_in, d_out)
 print(sa_v2(inputs))
+
+## Exercise 3.1
+
+# nn.Linear shape: (d_out, d_in)
+sa_v1.W_key = torch.nn.Parameter(sa_v2.W_key.weight.T)
+sa_v1.W_query = torch.nn.Parameter(sa_v2.W_query.weight.T)
+sa_v1.W_value = torch.nn.Parameter(sa_v2.W_value.weight.T)
+print(sa_v1(inputs))
+print(sa_v2(inputs))
+
+##
+
+### Hiding future words with causal attention
+
 import inspect
 print(inspect.getsource(sa_v2.__call__))
 # print(inspect.getsource(sa_v2._call_impl))
 
+# inputs @ W_query.weight.T (+ bias)
 queries = sa_v2.W_query(inputs)
 keys = sa_v2.W_key(inputs)
 attn_scores = queries @ keys.T
@@ -176,6 +201,8 @@ print(masked)
 
 attn_weights = torch.softmax(masked / keys.shape[-1]**0.5, dim=1)
 print(attn_weights)
+
+## Dropout
 
 torch.manual_seed(123)
 dropout = torch.nn.Dropout(0.5)
@@ -218,6 +245,8 @@ ca = CausalAttention(d_in, d_out, context_length, 0.0)
 context_vecs = ca(batch)
 print("context_vecs.shape:", context_vecs.shape)
 
+### Extending single-head attention to multi-head attention
+
 class MultiHeadAttentionWrapper(nn.Module):
     def __init__(self, d_in, d_out, context_length, dropout, num_heads, qkv_bias=False):
         super().__init__()
@@ -233,6 +262,16 @@ mha = MultiHeadAttentionWrapper(d_in, d_out, context_length, 0.0, num_heads=2)
 context_vecs = mha(batch)
 print(context_vecs)
 print("context_vecs.shape:", context_vecs.shape)
+
+## Exercise 3.2
+
+d_out = 1
+mha = MultiHeadAttentionWrapper(d_in, d_out, context_length, 0.0, num_heads=2)
+context_vecs = mha(batch)
+print(context_vecs)
+print("context_vecs.shape:", context_vecs.shape)
+
+## Implementing multi-head attention with weight splits
 
 class MultiHeadAttention(nn.Module):
     def __init__(self, d_in, d_out, context_length, dropout, num_heads, qkv_bias=False):
@@ -297,5 +336,14 @@ mha = MultiHeadAttention(d_in, d_out, context_length, 0.0, num_heads=2)
 context_vecs = mha(batch)
 print(context_vecs)
 print("context_vecs.shape:", context_vecs.shape)
+
+## Exercise 3.3
+
+block_size = 1024 # The maximum length of tokens the model can view at one time
+d_in = 768
+d_out = 768
+mha = MultiHeadAttention(d_in, d_out, block_size, 0.0, num_heads=12)
+
+##
 
 print()
