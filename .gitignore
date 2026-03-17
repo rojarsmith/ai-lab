@@ -1,5 +1,7 @@
 gpt2/
+sms_spam_collection/
 
 *.pth
+sms_spam_collection.zip
 the-verdict.txt
 __pycache__
