@@ -5,3 +5,10 @@ sms_spam_collection/
 sms_spam_collection.zip
 the-verdict.txt
 __pycache__
+
+test.csv
+train.csv
+validation.csv
+
+accuracy-plot.pdf
+loss-plot.pdf
