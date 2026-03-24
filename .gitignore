@@ -12,3 +12,6 @@ validation.csv
 
 accuracy-plot.pdf
 loss-plot.pdf
+
+instruction-data.json
+instruction-data-with-response.json
